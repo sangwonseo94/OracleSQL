@@ -1,0 +1,7 @@
+Dual  :  문장완성을 위한 Oracle Table
+NVL(null,"값") : null일때 값을 RETURN
+NVL2(비교대상 , NULL이 아니면, NULL이면  ) From Dual 
+
+SELECT name, position, comm
+
+FROM 
