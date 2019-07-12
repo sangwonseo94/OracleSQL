@@ -1,0 +1,108 @@
+COMMENT ON COLUMN EMP.EMPNO IS '사번1'; //COMMENT를 줄수 있다. 상위.하위 IS 내용 
+
+SELECT ENAME,SAL,EMPNO
+FROM EMP
+ORDER BY EMPNO ASC ,SAL DESC; // ORDERBY는 정렬을 해준다 ASC는 오름차순, DESC는 내림차순
+
+SELECT ENAME,EMPNO
+FROM EMP
+WHERE DEPTNO IN (10,30)
+ORDER BY ENAME;
+
+SELECT ENAME,HIREDATE
+FROM EMP
+WHERE HIREDATE LIKE '%82%';  //82가 끼어있으면 가져옴
+
+SELECT ENAME,SAL,COMM
+FROM EMP
+WHERE COMM IS NOT NULL 
+ORDER BY SAL DESC,COMM DESC;
+
+SELECT ENAME,SAL,COMM
+FROM EMP
+WHERE COMM >= (SAL * 0.2)AND to_char(DEPTNO)='30'; // and를 기준으로 왼쪽은 변수들의 연산, 오른쪽은 string 이므로 deptno를 to_char로 바꾸어준다
+
+//Group by 의 조건은 having에 두고, 일반은 where에 둔다.
+
+select count(comm)
+from professor
+where deptno = '101'; // NULL인것을 제외 
+
+select count(*)
+from professor
+where deptno = '101';          -- NULL인것을 제외하지 않음 
+
+SELECT AVG(weight),sum(weight) -- 그룹함수 
+From student
+where deptno = 101;
+
+SELECT MAX(weight),MIN(weight) --그룹함수 
+From student
+where deptno = 101; 
+
+SELECT DEPTNO,POSITION,MIN(SAL),MAX(SAL)
+FROM PROFESSOR
+GROUP BY DEPTNO,POSITION --~~학과에 ~~ 교수,부교수 ,,,들의 돈 / select와 똑같이 들어가면 된다 . 
+ORDER BY DEPTNO;
+
+SELECT DEPTNO,GRADE, COUNT(*),ROUND(AVG(WEIGHT),1) 
+FROM STUDENT
+GROUP BY DEPTNO,GRADE
+ORDER BY DEPTNO,GRADE;-- ROUND함수 (뭐를?,몇째자리에서?),몇째 자리에서를 안주면 소수점 1번째 자리에서 반올림하여서 보여준다.
+
+SELECT DEPTNO, POSITION, COUNT(*)
+FROM PROFESSOR
+GROUP BY ROLLUP (DEPTNO, POSITION); -- ROLLUP은 전체행을 그룹화 하고 각그룹에 대해서 부분합을 구한다.
+
+SELECT DEPTNO, POSITION, COUNT(*)
+FROM PROFESSOR
+GROUP BY CUBE (DEPTNO, POSITION); -- ROLLUP은 전체행을 그룹화 하고 각그룹에 대해서 부분합을 구한다.
+
+SELECT GRADE,COUNT(*),Round(AVG(HEIGHT)) AVG_HEIGHT --한칸뛰면 그 이름으로 나온다.
+from STUDENT
+group by GRADE
+having COUNT(*)>4
+order by AVG_HEIGHT desc;
+
+SELECT *
+FROM SALGRADE;
+
+desc salgrade;
+
+SELECT ENAME,SAL,JOB 
+FROM EMP
+WHERE SAL < 2000;
+
+SELECT ENAME,SAL,JOB,HIREDATE 
+FROM EMP
+WHERE HIREDATE > '81/02/01';
+
+--to_date()로 바꿀수 있다.
+
+SELECT ENAME,SAL,JOB 
+FROM EMP
+WHERE JOB != 'SALESMAN'
+ORDER BY JOB;
+
+SELECT ENAME,SAL,JOB 
+FROM EMP
+WHERE JOB != 'CLERK'
+ORDER BY JOB;
+
+SELECT EMPNO,ENAME
+FROM EMP
+WHERE ENAME LIKE 'K%';
+
+SELECT ENAME,SAL, (NVL(COMM,0)+SAL)*12 AS YearSAL
+FROM EMP;
+
+SELECT ENAME,JOB
+FROM EMP
+WHERE JOB IN ('MANAGER','SALESMAN')
+ORDER BY JOB;
+
+SELECT ENAME,SAL
+FROM EMP
+WHERE SAL>1500 AND SAL <3000
+ -- BETWEEN (1500,3000)
+ORDER BY SAL DESC;
