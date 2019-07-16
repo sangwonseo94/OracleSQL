@@ -1,0 +1,205 @@
+항목  Primary Key 			 Index
+
+속성  unique,최소성		상관없음
+
+개수  1개	          			 254개 이하
+
+구조  cluster 			 non cluster
+
+성능  index 보다 좋음		PK보다는 안좋음
+
+
+CREATE TABLE sugang
+(
+studno Number(5)
+        Constraint sugang_studno_FK References STUDENT(studno),   -- constraint 이름을 꼭 적어주자 
+subno Number(5)
+        Constraint sugang_stbno_FK References SUBJECT(subno),
+regdate Date,
+result Number(3),
+        Constraint sugang_PK PRIMARY Key(studno, subno)
+);
+
+
+SUGANG테이블을 만들것이다!
+STUDNO의 숫자 5자리는 STUDENT - STUDNO을 외래키로
+subject subno외래키로
+둘을 복합키인 기본키로 설정!
+
+	마스터성 Table  		vs	트랜잭션 Table
+
+항목 	회사에서 기준이되는 테이블		주기적으로 발생하는 테이블
+					업무를 관리하는 테이블
+
+
+PK	거의 단독				복합키가 많다
+
+
+CREATE TABLE sugang
+(
+studno Number(5)
+        Constraint sugang_studno_FK References STUDENT(studno), -- constraint 이름을 꼭 적어주자   
+subno Number(5)
+        Constraint sugang_stbno_FK References SUBJECT(subno),
+regdate Date,
+result Number(3),
+        Constraint sugang_PK PRIMARY Key(studno, subno)
+);
+
+
+
+CREATE TABLE subject
+( subno    number(5) Constraint subject_no_pk Primary Key, 
+  subname Varchar2(20) Constraint subject_name_nn NOT NULL,
+  term    Varchar2(1) Constraint subject_term_ck CHECK (term in('1','2')),
+  type    Varchar2(1)
+  );
+  
+  
+  Select constraint_name,constraint_type
+  From user_constaints
+  Where table_name IN('SUBJECT','SUGANG'); -- 
+  
+  ALTER TABLE STUDENT
+  ADD CONSTRAINT stud_idum_uk UNIQUE(idnum);
+  
+  Alter table student
+  modify (name constraint stud_name_nn NOT NULL);
+  
+  
+INSERT INTO subject Values(1,'SQL','1','필수');
+INSERT INTO subject Values(1,'','2','필수');
+INSERT INTO subject Values(1,'자바','3','필수');
+
+
+---------------------------------------------------------------------------------------------------
+---------------------------------인덱스(Index)----------------------------------------------------
+---------------------------------------------------------------------------------------------------
+
+성능향상을 위해서 
+-> 인덱스는 sql 명령문의 처리속도를 향상시키기 위해 칼럼에 대해서 생성하는 객체 
+btree 형식으로 구성
+
+인덱스가 효율적인경우 
+WHERE 절이나 조인 조건절에서 자주 사용되는 칼럼
+ ---- 전체 데이터중에서 10~15%이내의 데이터를 검색하는 경우 ---- 
+두 개 이상의 칼럼이 WHERE절이나 조인 조건에서 자주 사용되는 경우
+테이블에 저장된 데이터의 변경이 드문 경우
+
+
+
+
+---------------------------------------------------------------------------------------------------
+---------------------------------뷰(VIEW)----------------------------------------------------
+---------------------------------------------------------------------------------------------------
+
+내가 보여지고 싶은 정보만 보여주는것 
+
+단순뷰 : 하나의 기본 테이블에 의해 정의한 뷰
+
+
+복합뷰 : 두개 이상의 기본테이블로 구성한 뷰
+
+뷰에서 조작하면 원래 릴레이션도 변환이 된다 - > 제약조건도 릴레이션을 따라간다, NULL을 조심
+뷰를 통한 INSERT는 될수도 있고 안될수도 있다 .
+
+
+--------------------------------보안관리------------------------------
+
+접근제어 : DAC, (Discretion Access Control) : 권한을 부여해서 부여받은 사용자가 사용 
+	 MAC  (Mandatory Access Control) : 군에서 사용
+	 RBAC (ROLL BASE ACCESS CONTROL) : 
+암호화 :  API 암호화 : API 모듈을 이용하여 암호화 - Seed(암호화 모듈)
+	PLUGIN 암호화
+	proxy   암호화
+추론방지 :
+
+
+________________________________________________________________________
+
+과제 Solution
+
+select sum(sal) sum_sal,round(avg(sal)) avg_sal, count(sal)
+from emp;
+
+select deptno, sum(sal) sum_sal, round(avg(sal)) avg_sal
+from emp
+group by deptno;
+
+select job,max(sal) max_sal, min(sal) min_sal
+from emp
+group by job;
+
+select deptno,sum(sal) sum_sal,max(sal) max_sal, count(sal)
+from emp
+where comm is not NULL
+group by deptno;
+
+select d.DNAME,min(e.SAL),avg(e.sal)
+from emp e,dept d
+where e.deptno = d.deptno
+group by d.dname;
+
+select d.deptno, d.LOC,sum(e.sal),max(e.sal), count(e.sal)
+from emp e, dept d
+where e.deptno = d.deptno
+group by d.deptno,d.loc;
+
+select d.dname,e.job,sum(e.sal),max(e.sal),count(sal)
+from emp e, dept d
+where e.deptno = d.deptno
+group by d.dname,e.job;
+
+----------------------------------------------권한확인 
+Create user scott2 identified by tiger2;
+grant query rewrite to scott2;
+grant create session, resource to scott2; 
+
+--작업을 하기위한 최소한의 권한(session resource)
+
+
+select * from user_sys_privs; --다른사람에게 권한을 줄수 없다. --권한을 확인 할 수있는 명령어
+
+Revoke query rewrite from scott2; --권한 회수!!
+
+Rollback ; 데이터를 다시 원래대로 돌려줌
+
+데드락 : 
+
+process1,2간의 싸이클상 resource를 공유했을때 allocation과 request가 순환하는 구조 
+
+양쪽이 서로 필요한 것을 잡아두어서 놓아주지않음
+
+공유데이터에서 내가 하는 작업이 곂치지 않으려고 Lock을 걸어둔다.
+
+Transaction -> 원자성, 일관성 고립성을 유지 
+상호점유 
+점유와 대기
+비선점
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

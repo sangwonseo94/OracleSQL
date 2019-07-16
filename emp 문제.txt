@@ -1,0 +1,52 @@
+   --------    emp    -------------------------------------
+
+1. 회사전체 급여합계, 급여평균, 인원수
+2. 부서코드, 급여합계, 급여평균
+3. job별 최대급여, 최소급여, 인원수
+4. comm이 null이 아닌 사람의 부서코드별 급여합계,최대급여,인원수
+5. 부서명별 급여합계, 최소급여, 인원수
+6. 부서코드, 근무지(loc)별 급여합계,최대급여, 인원수
+8. 부서명,업무별급여합계,최대급여,인원수
+
+
+
+-- 1. 회사전체 급여합계, 급여평균, 인원수
+ select sum(sal), ROUND(avg(sal),2) , count(*)  
+ from emp;
+-- 2. 부서코드별  급여합계, 급여평균
+ select deptno,sum(sal),avg(sal) 
+ from emp 
+ group by deptno;
+-- 3. job별 최대급여, 최소급여, 인원수
+ select job,max(sal),min(sal),count(*) 
+ from emp 
+ group by job;
+-- 4. comm이 null이 아닌 사람의 부서코드별 급여합계,최대급여,인원수
+ select deptno,sum(sal),max(sal),count(*) 
+ from   emp 
+ where  comm is not null 
+ group by deptno;
+-- 5. 부서명별 급여합계, 최소급여, 인원수
+ select dname,sum(sal),min(sal),count(*) 
+ from emp e, dept d
+ where e.deptno=d.deptno 
+ group by dname;
+-- 6. 부서코드,근무지별 급여합계,최대급여, 인원수
+ select e.deptno,loc,sum(sal),max(sal),count(*) 
+ from emp e,  dept d 
+ where e.deptno=d.deptno 
+ group by e.deptno,loc; 
+-- 8. 부서명,업무별 급여합계,최대급여,인원수
+ select dname,job,sum(sal),max(sal),count(*) 
+ from emp e, dept d 
+ where e.deptno=d.deptno 
+ group by dname,job;
+
+ --------    emp / dept  / salgrade   
+9. 이름, 사수명(관리자명)
+10. 이름, 급여, 업무, 사수명(관리자명)
+12. 이름,급여,부서명, 사수명(관리자명)
+14. 이름,급여,등급(d,salgrade) ,부서명,사수명(관리자명:mgr), 
+    급여가 2000이상인 사람
+16. 이름,급여,등급,부서명,연봉, 사수명(관리자명)
+   %. 연봉=(급여+comm)*12 단 comm이 null이면 0
