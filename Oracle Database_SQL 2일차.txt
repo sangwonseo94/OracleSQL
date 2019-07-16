@@ -177,10 +177,17 @@ Transaction -> 원자성, 일관성 고립성을 유지
 점유와 대기
 비선점
 
+=> 해결방법 : 뱅커즈 알고리즘 , 한쪽을 Kill을 해주어야 한다.
 
 
+create role ht_mgr
+identified by manager;
+
+우리가 Role을 정의하여서 사용자에게 부여할 수 있다.
 
 
+동의어
+-> 권한을 넘겨받아서 table을 참조 할 때에 앞에 ***.project를 써주어야한다.
 
 
 
