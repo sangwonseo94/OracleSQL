@@ -1,0 +1,34 @@
+PL/SQL
+
+- 절차형 언어의 사용
+IF문을 사용하여 조건에 따라 일련의 문장을 실행합니다.
+LOOP문을 사용하여 일련의 문장을 반복적으로 실행합니다.
+Explicit Cursor를 사용하여 여러 행을 검색합니다.
+- 에러처리
+Exception 처리 루틴을 사용하여 Oracle 서버 에러를 처리합니다.
+사용자 정의 에러를 선언하고 Exception 처리 루틴에서 처리합니다.
+- 이식성
+PL/SQL은 Oracle에 내장되어 있으므로 Oracle과 PL/SQL을 지원하는어떤
+호스트로도 프로그램을 옮길 수 있습니다.
+- 성능 향상
+PL/SQL은 응용 프로그램의 성능을 향상시킵니다.
+PL/SQL은 여러 SQL 문장을 Block으로 묶고 한번에 Block 전부를 서버로
+보내기 때문에 통신량을 줄일 수 있습니다.
+
+DECALRE -> IS
+선언부 
+BEGIN
+실행부 ->필수
+EXCEPTION
+에러처리부
+END
+
+->세미콜론을 꼭써준다 매문장이 종료될때마다
+
+
+FUNCTION -> 값을 꼭 돌려줘야한다.
+PROCEDURE -> 액션을함 		-< 메소드역활
+
+FUNCTION 구조 
+
+F/P  function / procedure
