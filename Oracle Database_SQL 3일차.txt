@@ -32,3 +32,128 @@ PROCEDURE -> 액션을함 		-< 메소드역활
 FUNCTION 구조 
 
 F/P  function / procedure
+
+
+
+create or replace Function tax
+(v_num in number)
+return number
+is 
+  v_tax number;
+begin 
+  v_tax := v_num*0.07;
+return(v_tax);
+end ;
+
+왼쪽에 함수란에 정의한 함수가 뜬다 
+--------------------------------------------
+create or replace procedure p_tax
+(v_num in number , v_tax out number) 
+is
+begin 
+ v_tax := v_num*0.07;
+end;
+왼쪽 프로시저란에 뜬다.
+
+-- 1번째 방법 
+variable a number;
+execute p_tax(100,:a);
+print a
+
+procedure 실행방법 
+
+--2번째 방법 오른쪽에서 실행 -> 출력변수
+
+--3번쨰 방법 JAVA에서 호출하기 
+
+------------------------------------------------------------------------------------
+
+Create or replace Procedure show_dept
+(v_deptno in DEPT.DEPTNO%type)
+
+-- procedure가 하나두개가아니므로 type이 변경되면 모든것을 바꾸어 줄 수 없기 때문에
+-- type으로 선언하여 유지보수에 용이 
+is
+  v_dept dept%rowtype;
+   -- java의 객체처럼 . 을 찍어서 가능 
+begin
+  dbms_output.enable;
+  select deptno, dname, loc
+  into v_dept.deptno , v_dept.dname , v_dept.loc
+-- 각각 값이 차례대로 들어간다. 
+  from dept
+  where deptno = v_deptno;
+  dbms_output.put_line('부서번호: ' || v_dept.deptno );
+  dbms_output.put_line('부서이름: ' || v_dept.dname );
+  dbms_output.put_line('지   역: ' || v_dept.loc );
+  dbms_output.put_line('데이터조회 성공: ' );
+  end ;
+
+-> 상단 보기-> DBMS출력 -> +버튼 -> 계정 클릭
+
+create or replace procedure in_emp
+  ( v_name in emp.ename%Type,
+  v_sal in emp.sal%type
+  ,v_job in emp.job%type
+
+  )
+  IS
+  v_empno emp.empno%type;
+  lowsal_err exception;
+  
+  begin 
+    dbms_output.enable;
+    select max(empno)+1
+    into v_empno
+    from emp;
+    if v_sal >= 1000 then 
+        insert into emp(empno,ename,sal,job,deptno,hiredate)
+        values(v_empno,v_name,v_sal,v_job,10,sysdate);
+        else
+          raise lowsal_err;
+          end if;
+          exception
+            when lowsal_err then
+              dbms_output.put_Line ('error! 지정한 급여가 너무 적습니다 1000이상으로 입력해주세요 ');
+           end;
+
+-----------------------------------------------------------------------------
+
+create or replace procedure PreException_Test
+  (v_deptno IN emp.deptno%type)
+  is 
+   v_emp emp%rowtype;
+   begin 
+    dbms_output.enaBLe;
+    select empno, ename, v_emp.deptno
+    into v_emp.empno , v_emp.ename, v_emp.deptno
+    from emp
+    where deptno = v_deptno;
+    
+    dbms_output.put_line('사번 : ' || v_emp.empno);
+    dbms_output.put_line('이름 : ' || v_emp.ename);
+    dbms_output.put_line('부서번호 : ' || v_emp.deptno);
+    exception
+     when dup_val_on_index then
+    dbms_output.put_line('데이터가 존재합니다  ');
+    dbms_output.put_line('dup_val_no_index에러 발생 ' );
+    when  too_many_rows then
+    dbms_output.put_line('too_many_rows에러 발생');
+    when  no_data_found then
+      dbms_output.put_line('기타에러발생');
+      end;
+
+-----------------------------------------------------------
+오라클 PL/SQL은 자주 일어나는 몇가지 예외를 미리 정의해 놓았으며, 
+이러한 예외는 개발자가 따로 선언할 필요가 없다.
+미리 정의된 예외의 종류
+- NO_DATA_FOUND : SELECT문이 아무런 데이터 행을 반환하지 못할 때
+- DUP_VAL_ON_INDEX : UNIQUE 제약을 갖는 컬럼에 중복되는 데이터 INSERT 될 때
+- ZERO_DIVIDE : 0으로 나눌 때
+- INVALID_CURSOR : 잘못된 커서 연산
+- Predefined PL/SQL Exceptions 더 보기
+-----------------------------------------------------------
+
+
+
+PL/SQL CURSOR
