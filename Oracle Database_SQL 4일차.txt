@@ -1,8 +1,56 @@
+--------트리거 (trigger)
+
 create or replace trigger trigger_test
 before
 update on dept
 for each row
 begin
- dbms_output.put_line('변경전 컬럼 값 : ' || : old.dname);
- dbms_output.put_line('변경후 컬럼 값 : ' || : new.dname);
+ dbms_output.put_line('변경전 컬럼 값 : ' || :old.dname);
+ dbms_output.put_line('변경후 컬럼 값 : ' || :new.dname);
 end;
+
+update dept
+set DNAME = '당산'
+where deptno = 40;
+
+=> 변경이 되었을 때에 그 히스토리를 알려줌 
+
+
+트리거 : 정확도 목적은 별로... 비활성화가 되어있어서 
+주기적으로 꺼주는 db에서 문제가 생길수 있다 .
+
+create or replace trigger trigger_test2
+before
+insert or update on emp
+declare avg_sal number;
+begin
+select round(avg(sal),3)
+into avg_sal
+from emp;
+ dbms_output.put_line('insert 실행 전까지의 급여평균 : ' ||avg_sal);
+end;
+
+insert into emp(empno, ename, job, hiredate,sal)
+          values(1000,'lion','sales',sysdate,5000);
+          
+create or replace trigger tigger_test3
+before update or delete or INSERT on emp
+for each row
+  when (new.empno > 0)
+  declare v number;
+begin
+  v := :new.sal - :old.sal;
+  dbms_output.put_line('이전급여: ' || :old.sal);
+  dbms_output.put_line('신  급여: ' || :new.sal);
+  dbms_output.put_line('급여 차액: '||v);
+end;
+
+update emp
+set sal = 2000
+where ename = '서상원';
+
+
+
+--전체 백업
+--EXPDP scott/tiger Directory=mdBackup2 DUMPFILE=scott.dmp <-전체 백업
+--IMPDP scott/tiger Directory=mdBackup2 DUMPFILE=scott.dmp <-다시 돌려줌 
