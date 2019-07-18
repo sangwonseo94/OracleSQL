@@ -1,0 +1,8 @@
+create or replace trigger trigger_test
+before
+update on dept
+for each row
+begin
+ dbms_output.put_line('변경전 컬럼 값 : ' || : old.dname);
+ dbms_output.put_line('변경후 컬럼 값 : ' || : new.dname);
+end;
