@@ -1,0 +1,8 @@
+create or replace TRIGGER triger_test
+BEFORE
+UPDATE ON dept
+FOR EACH ROW -- old , new 사용하기 위해
+BEGIN
+      DBMS_OUTPUT.PUT_LINE('변경 전 컬럼 값 : ' || :old.dname);
+      DBMS_OUTPUT.PUT_LINE('변경 후 컬럼 값 : ' || :new.dname);
+END;
