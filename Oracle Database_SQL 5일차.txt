@@ -1,0 +1,13 @@
+나의 NETWORK card에 문제가 없는지 ? 
+
+cmd -> ping 127.0.0.1/ping localhost/ping 나의 네트워크이름
+
+인젝션
+
+일부러 || (참인문장) 을 포함시켜서 데이터베이스를 공격함 
+
+arp : addressing -> s
+
+
+spoofing 
+sniffing dos
